@@ -1,0 +1,446 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isRegisteredUser() {
+      return isSignedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidScholarDigitId(val) {
+      return val is string && val.size() == 8 && val.matches('^[0-9]{8}$');
+    }
+
+    function isNonNegNumber(val, maxVal) {
+      return val is number && val >= 0 && val <= maxVal;
+    }
+
+    function isValidPublicLeaderboard(data, userId) {
+      return data.keys().hasAll([
+          'userId',
+          'isPublic',
+          'displayName',
+          'studyLevel',
+          'primarySubject',
+          'bio',
+          'rankTitle',
+          'rankTier',
+          'totalPointsEarned',
+          'totalMinutes',
+          'streakDays',
+          'unlockedBadgesCount',
+          'dayKey',
+          'dailyMinutes',
+          'dailyPoints',
+          'weekKey',
+          'weeklyMinutes',
+          'weeklyPoints',
+          'yearKey',
+          'yearlyMinutes',
+          'yearlyPoints',
+          'isGuest',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'userId',
+          'scholarId',
+          'isPublic',
+          'displayName',
+          'photoURL',
+          'studyLevel',
+          'primarySubject',
+          'bio',
+          'focusWord',
+          'rankTitle',
+          'rankTier',
+          'equippedFrame',
+          'equippedBackground',
+          'equippedAvatar',
+          'totalPointsEarned',
+          'totalMinutes',
+          'streakDays',
+          'unlockedBadgesCount',
+          'dayKey',
+          'dailyMinutes',
+          'dailyPoints',
+          'weekKey',
+          'weeklyMinutes',
+          'weeklyPoints',
+          'yearKey',
+          'yearlyMinutes',
+          'yearlyPoints',
+          'isGuest',
+          'updatedAt'
+        ])
+        && data.userId == userId
+        && (!('scholarId' in data) || isValidScholarDigitId(data.scholarId))
+        && data.isPublic is bool
+        && data.isPublic == true
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 60
+        && (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 350))
+        && data.studyLevel is string && data.studyLevel.size() <= 60
+        && data.primarySubject is string && data.primarySubject.size() <= 50
+        && data.bio is string && data.bio.size() <= 160
+        && (!('focusWord' in data) || (data.focusWord is string && data.focusWord.size() <= 32))
+        && data.rankTitle is string && data.rankTitle.size() <= 40
+        && data.rankTier is string && data.rankTier.size() <= 20
+        && (!('equippedFrame' in data) || (data.equippedFrame is string && data.equippedFrame.size() <= 40))
+        && (!('equippedBackground' in data) || (data.equippedBackground is string && data.equippedBackground.size() <= 40))
+        && (!('equippedAvatar' in data) || (data.equippedAvatar is string && data.equippedAvatar.size() <= 40))
+        && isNonNegNumber(data.totalPointsEarned, 10000000)
+        && isNonNegNumber(data.totalMinutes, 10000000)
+        && isNonNegNumber(data.streakDays, 10000)
+        && isNonNegNumber(data.unlockedBadgesCount, 100)
+        && data.dayKey is string && data.dayKey.size() == 10
+        && isNonNegNumber(data.dailyMinutes, 1440)
+        && isNonNegNumber(data.dailyPoints, 100000)
+        && data.weekKey is string && data.weekKey.size() >= 7 && data.weekKey.size() <= 10
+        && isNonNegNumber(data.weeklyMinutes, 10080)
+        && isNonNegNumber(data.weeklyPoints, 500000)
+        && data.yearKey is string && data.yearKey.size() == 4
+        && isNonNegNumber(data.yearlyMinutes, 527040)
+        && isNonNegNumber(data.yearlyPoints, 10000000)
+        && data.isGuest is bool
+        && data.isGuest == false
+        && data.updatedAt == request.time;
+    }
+
+    function isValidFriendRequest(data, requestId) {
+      return data.keys().hasAll([
+          'requestId',
+          'fromUid',
+          'toUid',
+          'fromName',
+          'toName',
+          'fromScholarId',
+          'toScholarId',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'requestId',
+          'fromUid',
+          'toUid',
+          'fromName',
+          'toName',
+          'fromScholarId',
+          'toScholarId',
+          'fromFrame',
+          'fromAvatar',
+          'fromPrimarySubject',
+          'fromRankTier',
+          'toFrame',
+          'toAvatar',
+          'toPrimarySubject',
+          'toRankTier',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.requestId == requestId
+        && isValidId(data.fromUid)
+        && isValidId(data.toUid)
+        && data.fromUid != data.toUid
+        && requestId == (data.fromUid + '__' + data.toUid)
+        && data.fromName is string && data.fromName.size() >= 1 && data.fromName.size() <= 60
+        && data.toName is string && data.toName.size() >= 1 && data.toName.size() <= 60
+        && isValidScholarDigitId(data.fromScholarId)
+        && isValidScholarDigitId(data.toScholarId)
+        && (!('fromFrame' in data) || (data.fromFrame is string && data.fromFrame.size() <= 40))
+        && (!('fromAvatar' in data) || (data.fromAvatar is string && data.fromAvatar.size() <= 40))
+        && (!('fromPrimarySubject' in data) || (data.fromPrimarySubject is string && data.fromPrimarySubject.size() <= 50))
+        && (!('fromRankTier' in data) || (data.fromRankTier is string && data.fromRankTier.size() <= 20))
+        && (!('toFrame' in data) || (data.toFrame is string && data.toFrame.size() <= 40))
+        && (!('toAvatar' in data) || (data.toAvatar is string && data.toAvatar.size() <= 40))
+        && (!('toPrimarySubject' in data) || (data.toPrimarySubject is string && data.toPrimarySubject.size() <= 50))
+        && (!('toRankTier' in data) || (data.toRankTier is string && data.toRankTier.size() <= 20))
+        && data.status in ['pending', 'accepted', 'declined']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidFriendship(data, friendshipId) {
+      return data.keys().hasAll([
+          'friendshipId',
+          'userA',
+          'userB',
+          'memberUids',
+          'requestId',
+          'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'friendshipId',
+          'userA',
+          'userB',
+          'memberUids',
+          'requestId',
+          'userAName',
+          'userBName',
+          'userAScholarId',
+          'userBScholarId',
+          'createdAt'
+        ])
+        && data.friendshipId == friendshipId
+        && isValidId(data.userA)
+        && isValidId(data.userB)
+        && data.userA < data.userB
+        && friendshipId == (data.userA + '__' + data.userB)
+        && isValidId(data.requestId)
+        && data.memberUids is list
+        && data.memberUids.size() == 2
+        && data.memberUids[0] == data.userA
+        && data.memberUids[1] == data.userB
+        && (!('userAName' in data) || (data.userAName is string && data.userAName.size() <= 60))
+        && (!('userBName' in data) || (data.userBName is string && data.userBName.size() <= 60))
+        && (!('userAScholarId' in data) || isValidScholarDigitId(data.userAScholarId))
+        && (!('userBScholarId' in data) || isValidScholarDigitId(data.userBScholarId))
+        && data.createdAt == request.time;
+    }
+
+    function isValidGift(data, giftId) {
+      return data.keys().hasAll([
+          'giftId',
+          'fromUid',
+          'toUid',
+          'fromName',
+          'toName',
+          'fromScholarId',
+          'toScholarId',
+          'itemCategory',
+          'itemId',
+          'itemName',
+          'itemRarity',
+          'costPoints',
+          'message',
+          'status',
+          'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'giftId',
+          'fromUid',
+          'toUid',
+          'fromName',
+          'toName',
+          'fromScholarId',
+          'toScholarId',
+          'fromFrame',
+          'fromAvatar',
+          'itemCategory',
+          'itemId',
+          'itemName',
+          'itemRarity',
+          'costPoints',
+          'message',
+          'status',
+          'createdAt',
+          'claimedAt'
+        ])
+        && data.giftId == giftId
+        && isValidId(data.fromUid)
+        && isValidId(data.toUid)
+        && data.fromUid != data.toUid
+        && data.fromName is string && data.fromName.size() >= 1 && data.fromName.size() <= 60
+        && data.toName is string && data.toName.size() >= 1 && data.toName.size() <= 60
+        && isValidScholarDigitId(data.fromScholarId)
+        && isValidScholarDigitId(data.toScholarId)
+        && (!('fromFrame' in data) || (data.fromFrame is string && data.fromFrame.size() <= 40))
+        && (!('fromAvatar' in data) || (data.fromAvatar is string && data.fromAvatar.size() <= 40))
+        && data.itemCategory in ['frame', 'background', 'avatar']
+        && data.itemId is string && data.itemId.size() >= 1 && data.itemId.size() <= 40
+        && data.itemName is string && data.itemName.size() >= 1 && data.itemName.size() <= 80
+        && data.itemRarity in ['Starter', 'Rare', 'Epic', 'Legendary', 'Mythic']
+        && data.costPoints is number && data.costPoints > 0 && data.costPoints <= 100000
+        && data.message is string && data.message.size() <= 160
+        && data.status in ['unclaimed', 'claimed']
+        && data.createdAt is timestamp
+        && (!('claimedAt' in data) || data.claimedAt is timestamp);
+    }
+
+    // User profile documents (Private - Owner Only)
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) && isValidId(userId);
+
+      // Deep work session history
+      match /sessions/{sessionId} {
+        allow read, write: if isOwner(userId) && isValidId(sessionId);
+      }
+
+      // User study alarms
+      match /alarms/{alarmId} {
+        allow read, write: if isOwner(userId) && isValidId(alarmId);
+      }
+
+      // User study tasks
+      match /tasks/{taskId} {
+        allow read, write: if isOwner(userId) && isValidId(taskId);
+      }
+    }
+
+    // Public Leaderboard & Public Scholar Profile (Zero PII)
+    match /publicLeaderboard/{userId} {
+      allow get: if isValidId(userId) && (resource == null || resource.data.isPublic == true);
+      allow list: if resource.data.isPublic == true;
+      allow create: if isRegisteredUser()
+        && isOwner(userId)
+        && isValidId(userId)
+        && isValidPublicLeaderboard(incoming(), userId);
+      allow update: if resource != null
+        && isRegisteredUser()
+        && isOwner(userId)
+        && isValidId(userId)
+        && isValidPublicLeaderboard(incoming(), userId)
+        && incoming().userId == existing().userId
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'scholarId',
+          'isPublic',
+          'displayName',
+          'photoURL',
+          'studyLevel',
+          'primarySubject',
+          'bio',
+          'focusWord',
+          'rankTitle',
+          'rankTier',
+          'equippedFrame',
+          'equippedBackground',
+          'equippedAvatar',
+          'totalPointsEarned',
+          'totalMinutes',
+          'streakDays',
+          'unlockedBadgesCount',
+          'dayKey',
+          'dailyMinutes',
+          'dailyPoints',
+          'weekKey',
+          'weeklyMinutes',
+          'weeklyPoints',
+          'yearKey',
+          'yearlyMinutes',
+          'yearlyPoints',
+          'isGuest',
+          'updatedAt'
+        ]);
+      allow delete: if resource != null && isOwner(userId) && isValidId(userId);
+    }
+
+    // Registered Scholar Friend Requests ({fromUid}__{toUid})
+    match /friendRequests/{requestId} {
+      allow get: if isRegisteredUser()
+        && isValidId(requestId)
+        && (resource == null || existing().fromUid == request.auth.uid || existing().toUid == request.auth.uid);
+      allow list: if isRegisteredUser()
+        && (existing().fromUid == request.auth.uid || existing().toUid == request.auth.uid);
+      allow create: if isRegisteredUser()
+        && isValidId(requestId)
+        && isValidFriendRequest(incoming(), requestId)
+        && incoming().fromUid == request.auth.uid
+        && incoming().status == 'pending'
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && exists(/databases/$(database)/documents/publicLeaderboard/$(incoming().toUid));
+      allow update: if resource != null
+        && isRegisteredUser()
+        && isValidId(requestId)
+        && isValidFriendRequest(incoming(), requestId)
+        && existing().status == 'pending'
+        && existing().toUid == request.auth.uid
+        && incoming().fromUid == existing().fromUid
+        && incoming().toUid == existing().toUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (incoming().status == 'accepted' || incoming().status == 'declined')
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+      allow delete: if resource != null
+        && isRegisteredUser()
+        && isValidId(requestId)
+        && (existing().fromUid == request.auth.uid || existing().toUid == request.auth.uid);
+    }
+
+    // Mutual Accepted Friendships ({userA}__{userB}, sorted lexicographically)
+    match /friendships/{friendshipId} {
+      allow get: if isRegisteredUser()
+        && isValidId(friendshipId)
+        && (resource == null || request.auth.uid in existing().memberUids);
+      allow list: if isRegisteredUser()
+        && request.auth.uid in existing().memberUids;
+      allow create: if isRegisteredUser()
+        && isValidId(friendshipId)
+        && isValidFriendship(incoming(), friendshipId)
+        && request.auth.uid in incoming().memberUids
+        && getAfter(/databases/$(database)/documents/friendRequests/$(incoming().requestId)).data.status == 'accepted'
+        && getAfter(/databases/$(database)/documents/friendRequests/$(incoming().requestId)).data.toUid == request.auth.uid
+        && (
+          (
+            getAfter(/databases/$(database)/documents/friendRequests/$(incoming().requestId)).data.fromUid == incoming().userA
+            && getAfter(/databases/$(database)/documents/friendRequests/$(incoming().requestId)).data.toUid == incoming().userB
+          ) || (
+            getAfter(/databases/$(database)/documents/friendRequests/$(incoming().requestId)).data.fromUid == incoming().userB
+            && getAfter(/databases/$(database)/documents/friendRequests/$(incoming().requestId)).data.toUid == incoming().userA
+          )
+        );
+      allow update: if false;
+      allow delete: if resource != null
+        && isRegisteredUser()
+        && isValidId(friendshipId)
+        && request.auth.uid in existing().memberUids;
+    }
+
+    // Cosmetic Gift Parcels (/gifts/{giftId})
+    match /gifts/{giftId} {
+      allow get: if isRegisteredUser()
+        && isValidId(giftId)
+        && (resource == null || existing().toUid == request.auth.uid || existing().fromUid == request.auth.uid);
+      allow list: if isRegisteredUser()
+        && (existing().toUid == request.auth.uid || existing().fromUid == request.auth.uid);
+      allow create: if isRegisteredUser()
+        && isValidId(giftId)
+        && isValidGift(incoming(), giftId)
+        && incoming().fromUid == request.auth.uid
+        && incoming().status == 'unclaimed'
+        && !('claimedAt' in incoming())
+        && incoming().createdAt == request.time
+        && exists(/databases/$(database)/documents/publicLeaderboard/$(incoming().toUid));
+      allow update: if resource != null
+        && isRegisteredUser()
+        && isValidId(giftId)
+        && isValidGift(incoming(), giftId)
+        && existing().toUid == request.auth.uid
+        && existing().status == 'unclaimed'
+        && incoming().status == 'claimed'
+        && incoming().claimedAt == request.time
+        && incoming().fromUid == existing().fromUid
+        && incoming().toUid == existing().toUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'claimedAt']);
+      allow delete: if resource != null
+        && isRegisteredUser()
+        && isValidId(giftId)
+        && (existing().toUid == request.auth.uid || (existing().fromUid == request.auth.uid && existing().status == 'claimed'));
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Chronos Study & Productivity Clock",
+  "description": "Tablet-optimized productivity clock with study alarms, countdown timer, stopwatch, deep work tracking, Pomodoro cycles, and floating picture-in-picture window.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

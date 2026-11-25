@@ -1,0 +1,613 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================================
+   CHRONOS CLASSIC GLASS THEME SYSTEM (Light & Dark Specular Glass)
+   ============================================================================ */
+
+:root,
+.theme-obsidian-glass {
+  color-scheme: dark;
+  --ch-bg: #07090e;
+  --ch-mesh:
+    radial-gradient(ellipse 75% 50% at 15% -10%, rgba(245, 158, 11, 0.14), transparent 60%),
+    radial-gradient(ellipse 65% 45% at 88% 8%, rgba(56, 189, 248, 0.08), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 50% 105%, rgba(245, 158, 11, 0.07), transparent 60%);
+  --ch-panel: rgba(15, 18, 26, 0.68);
+  --ch-card: rgba(20, 24, 34, 0.56);
+  --ch-card-hover: rgba(28, 33, 46, 0.68);
+  --ch-subtle: rgba(12, 15, 22, 0.58);
+  --ch-modal: rgba(14, 17, 25, 0.88);
+  --ch-input-bg: rgba(9, 12, 18, 0.68);
+  --ch-border: rgba(255, 255, 255, 0.09);
+  --ch-border-strong: rgba(255, 255, 255, 0.16);
+  --ch-highlight: rgba(255, 255, 255, 0.12);
+  --ch-shadow: 0 18px 42px -18px rgba(0, 0, 0, 0.65);
+  --ch-text: #f4f5f7;
+  --ch-text-secondary: #c5cbd6;
+  --ch-text-muted: #8a94a6;
+  --ch-accent: #f59e0b;
+  --ch-accent-hover: #fbbf24;
+  --ch-accent-fg: #090b10;
+  --ch-accent-text: #fbbf24;
+  --ch-accent-soft: rgba(245, 158, 11, 0.13);
+  --ch-accent-border: rgba(245, 158, 11, 0.34);
+  --ch-ring-track: rgba(255, 255, 255, 0.09);
+}
+
+.theme-frosted-crystal {
+  color-scheme: light;
+  --ch-bg: #e7eef7;
+  --ch-mesh:
+    radial-gradient(ellipse 80% 55% at 12% -5%, rgba(255, 255, 255, 0.92), transparent 62%),
+    radial-gradient(ellipse 65% 50% at 90% 10%, rgba(186, 214, 255, 0.65), transparent 58%),
+    radial-gradient(ellipse 70% 50% at 45% 100%, rgba(253, 230, 188, 0.52), transparent 60%);
+  --ch-panel: rgba(255, 255, 255, 0.68);
+  --ch-card: rgba(255, 255, 255, 0.60);
+  --ch-card-hover: rgba(255, 255, 255, 0.78);
+  --ch-subtle: rgba(241, 245, 251, 0.72);
+  --ch-modal: rgba(250, 252, 255, 0.92);
+  --ch-input-bg: rgba(255, 255, 255, 0.85);
+  --ch-border: rgba(15, 23, 42, 0.10);
+  --ch-border-strong: rgba(15, 23, 42, 0.18);
+  --ch-highlight: rgba(255, 255, 255, 0.96);
+  --ch-shadow: 0 18px 40px -20px rgba(15, 23, 42, 0.18);
+  --ch-text: #0f172a;
+  --ch-text-secondary: #334155;
+  --ch-text-muted: #5b687c;
+  --ch-accent: #d97706;
+  --ch-accent-hover: #b45309;
+  --ch-accent-fg: #ffffff;
+  --ch-accent-text: #b45309;
+  --ch-accent-soft: rgba(217, 119, 6, 0.12);
+  --ch-accent-border: rgba(217, 119, 6, 0.36);
+  --ch-ring-track: rgba(15, 23, 42, 0.10);
+}
+
+.theme-midnight-sapphire {
+  color-scheme: dark;
+  --ch-bg: #050914;
+  --ch-mesh:
+    radial-gradient(ellipse 75% 55% at 15% -10%, rgba(56, 189, 248, 0.18), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 88% 12%, rgba(99, 102, 241, 0.14), transparent 55%),
+    radial-gradient(ellipse 65% 45% at 50% 105%, rgba(14, 165, 233, 0.10), transparent 60%);
+  --ch-panel: rgba(10, 19, 40, 0.66);
+  --ch-card: rgba(15, 26, 52, 0.54);
+  --ch-card-hover: rgba(22, 37, 72, 0.68);
+  --ch-subtle: rgba(8, 15, 34, 0.62);
+  --ch-modal: rgba(10, 18, 38, 0.90);
+  --ch-input-bg: rgba(7, 13, 28, 0.72);
+  --ch-border: rgba(148, 197, 255, 0.13);
+  --ch-border-strong: rgba(148, 197, 255, 0.22);
+  --ch-highlight: rgba(186, 230, 253, 0.15);
+  --ch-shadow: 0 20px 44px -18px rgba(2, 6, 23, 0.72);
+  --ch-text: #f0f6ff;
+  --ch-text-secondary: #bdd0ea;
+  --ch-text-muted: #7f97ba;
+  --ch-accent: #38bdf8;
+  --ch-accent-hover: #7dd3fc;
+  --ch-accent-fg: #04101f;
+  --ch-accent-text: #7dd3fc;
+  --ch-accent-soft: rgba(56, 189, 248, 0.14);
+  --ch-accent-border: rgba(56, 189, 248, 0.36);
+  --ch-ring-track: rgba(148, 197, 255, 0.12);
+}
+
+.theme-emerald-velvet {
+  color-scheme: dark;
+  --ch-bg: #050f0c;
+  --ch-mesh:
+    radial-gradient(ellipse 75% 55% at 15% -10%, rgba(16, 185, 129, 0.16), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 88% 12%, rgba(20, 184, 166, 0.11), transparent 55%),
+    radial-gradient(ellipse 65% 45% at 50% 105%, rgba(16, 185, 129, 0.08), transparent 60%);
+  --ch-panel: rgba(9, 24, 19, 0.66);
+  --ch-card: rgba(13, 33, 26, 0.54);
+  --ch-card-hover: rgba(18, 44, 35, 0.68);
+  --ch-subtle: rgba(7, 19, 15, 0.62);
+  --ch-modal: rgba(9, 23, 18, 0.90);
+  --ch-input-bg: rgba(5, 15, 12, 0.72);
+  --ch-border: rgba(110, 231, 183, 0.13);
+  --ch-border-strong: rgba(110, 231, 183, 0.22);
+  --ch-highlight: rgba(167, 243, 208, 0.14);
+  --ch-shadow: 0 20px 44px -18px rgba(0, 0, 0, 0.72);
+  --ch-text: #ecfdf5;
+  --ch-text-secondary: #b7ded0;
+  --ch-text-muted: #76a393;
+  --ch-accent: #10b981;
+  --ch-accent-hover: #34d399;
+  --ch-accent-fg: #03150e;
+  --ch-accent-text: #34d399;
+  --ch-accent-soft: rgba(16, 185, 129, 0.15);
+  --ch-accent-border: rgba(16, 185, 129, 0.36);
+  --ch-ring-track: rgba(110, 231, 183, 0.12);
+}
+
+@layer base {
+  html,
+  body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--ch-bg);
+    color: var(--ch-text);
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .font-mono,
+  .tabular-nums {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 150, 165, 0.28);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 150, 165, 0.45);
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Classic Glass Surfaces (GPU-friendly compositing) */
+.ch-canvas {
+  background-color: var(--ch-bg);
+  background-image: var(--ch-mesh);
+  color: var(--ch-text);
+  transition: background-color 220ms ease, color 180ms ease;
+}
+
+.ch-glass-panel {
+  background: var(--ch-panel);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border: 1px solid var(--ch-border);
+  box-shadow: inset 0 1px 0 var(--ch-highlight), var(--ch-shadow);
+}
+
+.ch-nav-dock {
+  background: var(--ch-modal);
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  box-shadow: 0 -8px 28px -12px rgba(0, 0, 0, 0.35);
+}
+
+.ch-glass-card {
+  background: var(--ch-card);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  border: 1px solid var(--ch-border);
+  box-shadow: inset 0 1px 0 var(--ch-highlight), var(--ch-shadow);
+  contain: layout style;
+}
+
+/* Avoid nested backdrop-filter framebuffer readbacks inside panels, modals, or other cards */
+.ch-glass-panel .ch-glass-card,
+.ch-glass-modal .ch-glass-card,
+.ch-glass-card .ch-glass-card {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.ch-glass-subtle {
+  background: var(--ch-subtle);
+  border: 1px solid var(--ch-border);
+}
+
+.ch-glass-modal {
+  background: var(--ch-modal);
+  backdrop-filter: blur(16px) saturate(125%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  border: 1px solid var(--ch-border-strong);
+  box-shadow: inset 0 1px 0 var(--ch-highlight), 0 24px 48px -18px rgba(0, 0, 0, 0.42);
+  color: var(--ch-text);
+}
+
+.ch-input {
+  background: var(--ch-input-bg);
+  border: 1px solid var(--ch-border);
+  color: var(--ch-text);
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+.ch-input::placeholder {
+  color: var(--ch-text-muted);
+}
+.ch-input:focus {
+  outline: none;
+  border-color: var(--ch-accent);
+}
+
+.ch-btn-primary {
+  background: var(--ch-accent);
+  color: var(--ch-accent-fg);
+  font-weight: 700;
+  transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+}
+.ch-btn-primary:hover {
+  background: var(--ch-accent-hover);
+}
+.ch-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.ch-btn-secondary {
+  background: var(--ch-subtle);
+  color: var(--ch-text-secondary);
+  border: 1px solid var(--ch-border);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.ch-btn-secondary:hover {
+  background: var(--ch-card-hover);
+  border-color: var(--ch-border-strong);
+  color: var(--ch-text);
+}
+
+.ch-accent-soft {
+  background: var(--ch-accent-soft);
+  border: 1px solid var(--ch-accent-border);
+  color: var(--ch-accent-text);
+}
+
+.ch-text {
+  color: var(--ch-text);
+}
+.ch-text-secondary {
+  color: var(--ch-text-secondary);
+}
+.ch-text-muted {
+  color: var(--ch-text-muted);
+}
+.ch-text-accent {
+  color: var(--ch-accent-text);
+}
+.ch-border {
+  border-color: var(--ch-border);
+}
+.ch-border-strong {
+  border-color: var(--ch-border-strong);
+}
+
+/* Smooth transitions */
+@keyframes chronosFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: chronosFadeIn 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Compositor-only GPU animations for Mythic Animated Store Cosmetics */
+@keyframes chronosSpinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes chronosSpinReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes chronosFloatBob {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes chronosPulseOpacity {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+  50% {
+    opacity: 0.96;
+  }
+}
+
+@keyframes chronosSweepX {
+  0% {
+    transform: translateX(-115%);
+  }
+  100% {
+    transform: translateX(145%);
+  }
+}
+
+@keyframes chronosEmberRise {
+  0% {
+    transform: translateY(14px) scale(0.8);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-28px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes chronosWaveDrift {
+  0%,
+  100% {
+    transform: translateX(-12px) translateY(0px);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(14px) translateY(-4px);
+    opacity: 0.9;
+  }
+}
+
+.ch-anim-spin-slow {
+  animation: chronosSpinSlow 11s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ch-anim-spin-fast {
+  animation: chronosSpinSlow 4.8s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ch-anim-spin-rev {
+  animation: chronosSpinReverse 9s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ch-anim-float {
+  animation: chronosFloatBob 3.2s ease-in-out infinite;
+}
+
+.ch-anim-pulse {
+  animation: chronosPulseOpacity 2.6s ease-in-out infinite;
+}
+
+.ch-anim-sweep {
+  animation: chronosSweepX 4.5s ease-in-out infinite;
+}
+
+.ch-anim-ember {
+  animation: chronosEmberRise 3.2s ease-out infinite;
+}
+
+.ch-anim-wave {
+  animation: chronosWaveDrift 6.5s ease-in-out infinite;
+}
+
+/* Gift Mailbox Dynamic Unboxing Stage (GPU Composited) */
+@keyframes chronosGiftShake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  15% {
+    transform: translate3d(-4px, -2px, 0) rotate(-4deg) scale(1.03);
+  }
+  30% {
+    transform: translate3d(4px, -4px, 0) rotate(4deg) scale(1.05);
+  }
+  45% {
+    transform: translate3d(-5px, -2px, 0) rotate(-5deg) scale(1.07);
+  }
+  60% {
+    transform: translate3d(5px, -5px, 0) rotate(5deg) scale(1.09);
+  }
+  80% {
+    transform: translate3d(0, -8px, 0) rotate(0deg) scale(1.12);
+  }
+}
+
+@keyframes chronosGiftBurstRing {
+  0% {
+    transform: scale(0.35);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(2.15);
+    opacity: 0;
+  }
+}
+
+@keyframes chronosGiftReveal {
+  0% {
+    transform: scale(0.55) translateY(18px);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.06) translateY(-4px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes chronosConfettiFly {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.4) rotate(0deg);
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--tx, 60px), var(--ty, -70px), 0) scale(1.05) rotate(var(--rot, 240deg));
+    opacity: 0;
+  }
+}
+
+@keyframes chronosWingBreathe {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.92;
+  }
+  50% {
+    transform: translateY(-2.5px) scale(1.035);
+    opacity: 1;
+  }
+}
+
+@keyframes chronosShimmerGlint {
+  0%,
+  100% {
+    transform: translateX(-12%) translateY(-4%) rotate(-28deg);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateX(12%) translateY(4%) rotate(-28deg);
+    opacity: 0.72;
+  }
+}
+
+@keyframes chronosTwinkleGem {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+
+.ch-anim-wing-breathe {
+  animation: chronosWingBreathe 2.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ch-anim-shimmer-glint {
+  animation: chronosShimmerGlint 3.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ch-anim-twinkle {
+  animation: chronosTwinkleGem 2.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ch-gift-shake {
+  animation: chronosGiftShake 0.85s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+}
+
+.ch-gift-burst-ring {
+  animation: chronosGiftBurstRing 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.ch-gift-reveal {
+  animation: chronosGiftReveal 0.62s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ch-gift-confetti {
+  animation: chronosConfettiFly 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .ch-anim-spin-slow,
+  .ch-anim-spin-fast,
+  .ch-anim-spin-rev,
+  .ch-anim-float,
+  .ch-anim-pulse,
+  .ch-anim-sweep,
+  .ch-anim-ember,
+  .ch-anim-wave,
+  .ch-anim-wing-breathe,
+  .ch-anim-shimmer-glint,
+  .ch-anim-twinkle,
+  .ch-gift-shake,
+  .ch-gift-burst-ring,
+  .ch-gift-reveal,
+  .ch-gift-confetti {
+    animation: none;
+  }
+}
+
+/* ============================================================================
+   STORE PERFORMANCE & NON-COPYABLE COSMETIC ASSET PROTECTION
+   ============================================================================ */
+
+/* Prevent saving, dragging, selecting, or long-press copying cosmetic images & frames */
+.ch-protected-asset,
+.ch-protected-asset img,
+.ch-protected-asset svg {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+.ch-protected-asset img {
+  pointer-events: none;
+}
+
+/* Pause continuous keyframe animations inside scrollable Store grid thumbnails */
+.ch-static-preview,
+.ch-static-preview *,
+.ch-static-preview *::before,
+.ch-static-preview *::after {
+  animation: none !important;
+}
+
+/* Skip layout & paint for off-screen Store grid cards */
+.ch-store-card-contain {
+  content-visibility: auto;
+  contain-intrinsic-size: 280px 304px;
+}
+

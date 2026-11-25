@@ -1,0 +1,247 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile, subjects, studio workspace configuration, and study settings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "User UID" },
+        "scholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "Deterministic 8-digit Scholar Lookup ID" },
+        "displayName": { "type": "string", "maxLength": 100, "description": "User full name or handle" },
+        "email": { "type": "string", "maxLength": 150, "description": "User email address" },
+        "studyLevel": { "type": "string", "maxLength": 60, "description": "Academic study level" },
+        "bio": { "type": "string", "maxLength": 200, "description": "Scholar bio or study motto" },
+        "dailyTargetHours": { "type": "number", "description": "Daily deep work goal in hours" },
+        "primarySubject": { "type": "string", "maxLength": 50, "description": "Primary study field" },
+        "activeSubject": { "type": "string", "maxLength": 50, "description": "Currently selected timer subject" },
+        "subjects": { "type": "array", "description": "Persisted list of user study subjects and custom color tags" },
+        "pomodoroConfig": { "type": "object", "description": "Persisted Pomodoro interval durations, auto-start flags, sound alert, and ticking setting" },
+        "customization": { "type": "object", "description": "Persisted theme, mobile bottom navigation tabs, sidebar visibility toggles, and favorite tracks" },
+        "backgroundSettings": { "type": "object", "description": "Persisted Keep Awake and notification alert preferences" },
+        "is24Hour": { "type": "boolean", "description": "Preferred clock and alarm time format" },
+        "dailyCheckIn": { "type": "object", "description": "Today's study check-in intention and progress" },
+        "savedYoutubeTracks": { "type": "array", "description": "Saved custom YouTube background audio tracks" },
+        "youtubePlaylists": { "type": "array", "description": "Custom YouTube playlists" },
+        "wallet": { "type": "object", "description": "Account-isolated Chronos Grand Store wallet, unlocked items, equipped cosmetics, and lifetime XP" },
+        "createdAt": { "type": "string", "description": "Account creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["id", "email"]
+    },
+    "StudySession": {
+      "title": "StudySession",
+      "description": "Completed or recorded deep work and study sessions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique session ID" },
+        "userId": { "type": "string", "description": "UID of owner" },
+        "timestamp": { "type": "number", "description": "Session epoch time in milliseconds" },
+        "durationMinutes": { "type": "number", "description": "Focused minutes completed" },
+        "phase": { "type": "string", "enum": ["focus", "shortBreak", "longBreak", "countdown", "stopwatch"], "description": "Session mode" },
+        "subject": { "type": "string", "maxLength": 50, "description": "Study course or subject" },
+        "notes": { "type": "string", "maxLength": 500, "description": "Optional objectives or notes" },
+        "completed": { "type": "boolean", "description": "Whether session was completed" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["id", "userId", "timestamp", "durationMinutes", "subject"]
+    },
+    "StudyAlarm": {
+      "title": "StudyAlarm",
+      "description": "Configured study schedule alarm",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Alarm ID" },
+        "userId": { "type": "string", "description": "UID of owner" },
+        "time": { "type": "string", "pattern": "^[0-2][0-9]:[0-5][0-9]$", "description": "Alarm time in HH:MM" },
+        "label": { "type": "string", "maxLength": 100, "description": "Alarm label" },
+        "category": { "type": "string", "maxLength": 30, "description": "Category name" },
+        "days": { "type": "array", "description": "Days of week (0-6)" },
+        "enabled": { "type": "boolean", "description": "Enabled status" },
+        "sound": { "type": "string", "maxLength": 30, "description": "Alarm tone" },
+        "snoozeMinutes": { "type": "number", "description": "Snooze duration in minutes" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["id", "userId", "time", "label", "enabled"]
+    },
+    "StudyTaskItem": {
+      "title": "StudyTaskItem",
+      "description": "Study task and checklist item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Task ID" },
+        "userId": { "type": "string", "description": "UID of owner" },
+        "title": { "type": "string", "maxLength": 200, "description": "Task title" },
+        "subject": { "type": "string", "maxLength": 50, "description": "Associated subject" },
+        "estimatedPomodoros": { "type": "number", "description": "Target pomodoros" },
+        "completedPomodoros": { "type": "number", "description": "Completed pomodoros" },
+        "done": { "type": "boolean", "description": "Completion state" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["id", "userId", "title", "done"]
+    },
+    "PublicLeaderboardEntry": {
+      "title": "PublicLeaderboardEntry",
+      "description": "Public-safe scholar leaderboard and profile metrics (no email or private logs)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128, "description": "Scholar UID" },
+        "scholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "Deterministic 8-digit Scholar Lookup ID" },
+        "isPublic": { "type": "boolean", "description": "Visibility flag for leaderboard query enforcement" },
+        "displayName": { "type": "string", "maxLength": 60, "description": "Public scholar name" },
+        "photoURL": { "type": "string", "maxLength": 350, "description": "Optional avatar URL" },
+        "studyLevel": { "type": "string", "maxLength": 60, "description": "Academic level" },
+        "primarySubject": { "type": "string", "maxLength": 50, "description": "Primary study discipline" },
+        "bio": { "type": "string", "maxLength": 160, "description": "Public study motto" },
+        "focusWord": { "type": "string", "maxLength": 32, "description": "Daily check-in focus word" },
+        "rankTitle": { "type": "string", "maxLength": 40, "description": "Scholar rank title" },
+        "rankTier": { "type": "string", "maxLength": 20, "description": "Scholar rank tier" },
+        "equippedFrame": { "type": "string", "maxLength": 40, "description": "Equipped Chronos Grand Store avatar frame ID" },
+        "equippedBackground": { "type": "string", "maxLength": 40, "description": "Equipped Chronos Grand Store profile banner ID" },
+        "equippedAvatar": { "type": "string", "maxLength": 40, "description": "Equipped Chronos Grand Store vector emblem ID" },
+        "totalPointsEarned": { "type": "number", "description": "Lifetime focus XP" },
+        "totalMinutes": { "type": "number", "description": "Lifetime focused minutes" },
+        "streakDays": { "type": "number", "description": "Active consecutive study streak days" },
+        "unlockedBadgesCount": { "type": "number", "description": "Unlocked achievement badges count" },
+        "dayKey": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "description": "Current local YYYY-MM-DD key" },
+        "dailyMinutes": { "type": "number", "description": "Minutes focused on dayKey" },
+        "dailyPoints": { "type": "number", "description": "Focus XP earned on dayKey" },
+        "weekKey": { "type": "string", "pattern": "^[0-9]{4}-W[0-9]{2}$", "description": "Current ISO week YYYY-Www key" },
+        "weeklyMinutes": { "type": "number", "description": "Minutes focused in weekKey" },
+        "weeklyPoints": { "type": "number", "description": "Focus XP earned in weekKey" },
+        "yearKey": { "type": "string", "pattern": "^[0-9]{4}$", "description": "Current year YYYY key" },
+        "yearlyMinutes": { "type": "number", "description": "Minutes focused in yearKey" },
+        "yearlyPoints": { "type": "number", "description": "Focus XP earned in yearKey" },
+        "isGuest": { "type": "boolean", "description": "Whether account is anonymous guest scholar" },
+        "updatedAt": { "type": "string", "description": "Server sync timestamp" }
+      },
+      "required": [
+        "userId",
+        "isPublic",
+        "displayName",
+        "studyLevel",
+        "primarySubject",
+        "bio",
+        "rankTitle",
+        "rankTier",
+        "totalPointsEarned",
+        "totalMinutes",
+        "streakDays",
+        "unlockedBadgesCount",
+        "dayKey",
+        "dailyMinutes",
+        "dailyPoints",
+        "weekKey",
+        "weeklyMinutes",
+        "weeklyPoints",
+        "yearKey",
+        "yearlyMinutes",
+        "yearlyPoints",
+        "isGuest"
+      ]
+    },
+    "FriendRequest": {
+      "title": "FriendRequest",
+      "description": "Directional scholar friend request identified by {fromUid}__{toUid}",
+      "type": "object",
+      "properties": {
+        "requestId": { "type": "string", "maxLength": 128, "description": "Deterministic request ID {fromUid}__{toUid}" },
+        "fromUid": { "type": "string", "maxLength": 128, "description": "Sender UID" },
+        "toUid": { "type": "string", "maxLength": 128, "description": "Recipient UID" },
+        "fromName": { "type": "string", "maxLength": 60, "description": "Sender display name" },
+        "toName": { "type": "string", "maxLength": 60, "description": "Recipient display name" },
+        "fromScholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "Sender 8-digit Scholar ID" },
+        "toScholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "Recipient 8-digit Scholar ID" },
+        "fromFrame": { "type": "string", "maxLength": 40, "description": "Sender equipped frame" },
+        "fromAvatar": { "type": "string", "maxLength": 40, "description": "Sender equipped emblem" },
+        "fromPrimarySubject": { "type": "string", "maxLength": 50, "description": "Sender primary subject" },
+        "fromRankTier": { "type": "string", "maxLength": 20, "description": "Sender rank tier" },
+        "toFrame": { "type": "string", "maxLength": 40, "description": "Recipient equipped frame" },
+        "toAvatar": { "type": "string", "maxLength": 40, "description": "Recipient equipped emblem" },
+        "toPrimarySubject": { "type": "string", "maxLength": 50, "description": "Recipient primary subject" },
+        "toRankTier": { "type": "string", "maxLength": 20, "description": "Recipient rank tier" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "declined"], "description": "Request status" },
+        "createdAt": { "type": "string", "description": "Server timestamp when sent" },
+        "updatedAt": { "type": "string", "description": "Server timestamp of last status change" }
+      },
+      "required": ["requestId", "fromUid", "toUid", "fromName", "toName", "fromScholarId", "toScholarId", "status", "createdAt", "updatedAt"]
+    },
+    "Friendship": {
+      "title": "Friendship",
+      "description": "Accepted mutual friendship edge keyed by sorted {userA}__{userB}",
+      "type": "object",
+      "properties": {
+        "friendshipId": { "type": "string", "maxLength": 128, "description": "Sorted ID {userA}__{userB}" },
+        "userA": { "type": "string", "maxLength": 128, "description": "Lexicographically smaller UID" },
+        "userB": { "type": "string", "maxLength": 128, "description": "Lexicographically larger UID" },
+        "memberUids": { "type": "array", "description": "2-element ordered tuple [userA, userB]" },
+        "requestId": { "type": "string", "maxLength": 128, "description": "Accepted friendRequest ID" },
+        "userAName": { "type": "string", "maxLength": 60, "description": "User A cached name" },
+        "userBName": { "type": "string", "maxLength": 60, "description": "User B cached name" },
+        "userAScholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "User A 8-digit ID" },
+        "userBScholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "User B 8-digit ID" },
+        "createdAt": { "type": "string", "description": "Server creation timestamp" }
+      },
+      "required": ["friendshipId", "userA", "userB", "memberUids", "requestId", "createdAt"]
+    },
+    "GiftItem": {
+      "title": "GiftItem",
+      "description": "Cosmetic gift parcel sent from one scholar to another using Focus XP",
+      "type": "object",
+      "properties": {
+        "giftId": { "type": "string", "maxLength": 128, "description": "Unique gift parcel ID" },
+        "fromUid": { "type": "string", "maxLength": 128, "description": "Sender UID" },
+        "toUid": { "type": "string", "maxLength": 128, "description": "Recipient UID" },
+        "fromName": { "type": "string", "maxLength": 60, "description": "Sender display name" },
+        "toName": { "type": "string", "maxLength": 60, "description": "Recipient display name" },
+        "fromScholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "Sender 8-digit Scholar ID" },
+        "toScholarId": { "type": "string", "pattern": "^[0-9]{8}$", "description": "Recipient 8-digit Scholar ID" },
+        "fromFrame": { "type": "string", "maxLength": 40, "description": "Sender equipped frame" },
+        "fromAvatar": { "type": "string", "maxLength": 40, "description": "Sender equipped emblem" },
+        "itemCategory": { "type": "string", "enum": ["frame", "background", "avatar"], "description": "Store cosmetic category" },
+        "itemId": { "type": "string", "maxLength": 40, "description": "Store item identifier" },
+        "itemName": { "type": "string", "maxLength": 80, "description": "Store item display name" },
+        "itemRarity": { "type": "string", "enum": ["Starter", "Rare", "Epic", "Legendary", "Mythic"], "description": "Cosmetic rarity" },
+        "costPoints": { "type": "number", "description": "Focus XP cost paid by sender" },
+        "message": { "type": "string", "maxLength": 160, "description": "Optional gift note" },
+        "status": { "type": "string", "enum": ["unclaimed", "claimed"], "description": "Gift parcel status" },
+        "createdAt": { "type": "string", "description": "Server timestamp when gifted" },
+        "claimedAt": { "type": "string", "description": "Server timestamp when claimed by recipient" }
+      },
+      "required": ["giftId", "fromUid", "toUid", "fromName", "toName", "fromScholarId", "toScholarId", "itemCategory", "itemId", "itemName", "itemRarity", "costPoints", "message", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User private profile and study target preferences"
+    },
+    "/users/{userId}/sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/StudySession" },
+      "description": "Recorded deep work sessions for this user"
+    },
+    "/users/{userId}/alarms/{alarmId}": {
+      "schema": { "$ref": "#/entities/StudyAlarm" },
+      "description": "Scheduled study alarms for this user"
+    },
+    "/users/{userId}/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/StudyTaskItem" },
+      "description": "Study tasks and agenda milestones for this user"
+    },
+    "/publicLeaderboard/{userId}": {
+      "schema": { "$ref": "#/entities/PublicLeaderboardEntry" },
+      "description": "Public-safe scholar leaderboard standings, searchable digit ID, and public profile view"
+    },
+    "/friendRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/FriendRequest" },
+      "description": "Registered scholar friend requests scoped to sender and recipient"
+    },
+    "/friendships/{friendshipId}": {
+      "schema": { "$ref": "#/entities/Friendship" },
+      "description": "Mutual accepted scholar friendships scoped to the two participants"
+    },
+    "/gifts/{giftId}": {
+      "schema": { "$ref": "#/entities/GiftItem" },
+      "description": "Store cosmetic gift parcels scoped to sender and recipient mailbox"
+    }
+  }
+}
